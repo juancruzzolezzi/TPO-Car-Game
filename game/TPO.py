@@ -20,6 +20,10 @@ INCREMENTO_VELOCIDAD = 0.5
 ANCHO_CARRETERA = 400
 MARGEN_CARRETERA = (ANCHO - ANCHO_CARRETERA) // 2  # Centrando la carretera
 
+# Inicializar variables de distancia y puntuación
+distancia_recorrida = 0
+puntuacion = 0
+
 # Cambiar el directorio de trabajo al directorio del script (con esto se puede modularizar el codigo)
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
@@ -67,6 +71,9 @@ carretera_inferior = pygame.Surface((ANCHO_CARRETERA, ALTO))
 carretera_inferior.fill(COLOR_CARRETERA)
 carretera_rect_inferior = carretera_inferior.get_rect(topleft=(MARGEN_CARRETERA, -ALTO))
 
+# Fuente para mostrar la distancia y la puntuación
+fuente = pygame.font.Font(None, 36)
+
 # Función para crear un nuevo obstáculo
 def crear_obstaculo():
     x_obstaculo = random.randint(MARGEN_CARRETERA, ANCHO - MARGEN_CARRETERA - obstaculo_imagen.get_width())
@@ -106,6 +113,9 @@ while True:
     # Mover la carretera
     carretera_rect_superior.y += VELOCIDAD_CARRETERA
     carretera_rect_inferior.y += VELOCIDAD_CARRETERA
+    
+    # Actualizar la distancia recorrida
+    distancia_recorrida += VELOCIDAD_CARRETERA / FPS
 
     # Volver a posicionar la carretera
     if carretera_rect_superior.y >= ALTO:
@@ -125,8 +135,14 @@ while True:
             pygame.quit()
             sys.exit()
 
-    # Eliminar los obstáculos que salen de la pantalla
-    obstaculos = [obstaculo for obstaculo in obstaculos if obstaculo.y < ALTO]
+    # Eliminar obstáculos que han salido de la pantalla y aumentar la puntuación
+    nuevos_obstaculos = []
+    for obstaculo in obstaculos:
+        if obstaculo.y >= ALTO:
+            puntuacion += 1
+        else:
+            nuevos_obstaculos.append(obstaculo)
+    obstaculos = nuevos_obstaculos
 
     # Actualizar la pantalla
     pantalla.fill(COLOR_FONDO)
@@ -151,7 +167,14 @@ while True:
     # Dibujar obstáculos
     for obstaculo in obstaculos:
         pantalla.blit(obstaculo_imagen, obstaculo)
+        
+    # Mostrar la distancia y la puntuación
+    texto_distancia = fuente.render(f"Distancia: {int(distancia_recorrida)} mts", True, (255, 255, 255))
+    texto_puntuacion = fuente.render(f"Puntuación: {puntuacion}", True, (255, 255, 255))
+    pantalla.blit(texto_distancia, (10, 10))
+    pantalla.blit(texto_puntuacion, (10, 50))
 
+    # Actualizar la pantalla
     pygame.display.flip()
 
     # Controlar la velocidad de actualización

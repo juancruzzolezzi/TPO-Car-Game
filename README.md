@@ -9,7 +9,7 @@ TPO - VIDEO JUEGO DE AUTOS.
 [o] definicion de dificultad.
 [o] modularizacion de codigo.
 [o] agregado de README.md.
-[x] creacion de score.
+[o] creacion de score.
 [x] creacion de niveles.
 [x] modificacion de dificultad.
 [x] agregado de mas obstaculos con diferente imagen.
