@@ -13,9 +13,9 @@ COLOR_FONDO = (16, 174, 6)  # Verde pasto (Lawn Green)
 COLOR_CARRETERA = (50, 50, 50)  # Gris oscuro
 COLOR_LINEA = (255, 255, 255)  # Blanco para las líneas de la carretera
 FPS = 60
-VELOCIDAD_AUTO = 5
-VELOCIDAD_CARRETERA = 4
-VELOCIDAD_OBSTACULO = 7
+VELOCIDAD_AUTO = 20
+VELOCIDAD_CARRETERA = 100
+VELOCIDAD_OBSTACULO = 10
 INCREMENTO_VELOCIDAD = 0.5
 ANCHO_CARRETERA = 400
 MARGEN_CARRETERA = (ANCHO - ANCHO_CARRETERA) // 2  # Centrando la carretera
@@ -172,7 +172,7 @@ while True:
     texto_distancia = fuente.render(f"Distancia: {int(distancia_recorrida)} mts", True, (255, 255, 255))
     texto_puntuacion = fuente.render(f"Puntuación: {puntuacion}", True, (255, 255, 255))
     pantalla.blit(texto_distancia, (10, 10))
-    pantalla.blit(texto_puntuacion, (10, 50))
+    pantalla.blit(texto_puntuacion, (10, 40))
 
     # Actualizar la pantalla
     pygame.display.flip()
