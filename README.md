@@ -16,3 +16,4 @@ TPO - VIDEO JUEGO DE AUTOS.
 [x] hacer el LogIn con regex.
 [x] que se grabe el record y un leaderboard de maximo 10 max scores.
 [x] pantalla de record al romperlo
+[x] que la velocidad del auto y la carretera arranque en un valor bajo y vaya aumentando a lo  largo del juego
