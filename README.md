@@ -15,3 +15,4 @@ TPO - VIDEO JUEGO DE AUTOS.
 [x] agregado de mas obstaculos con diferente imagen.
 [x] hacer el LogIn con regex.
 [x] que se grabe el record y un leaderboard de maximo 10 max scores.
+[x] pantalla de nuevo record al romperlo.
