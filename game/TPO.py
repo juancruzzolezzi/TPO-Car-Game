@@ -27,7 +27,7 @@ distancia_recorrida = 0
 puntuacion = 0
 
 # Constantes modificadas
-VELOCIDAD_AUTO_BASE = 7
+VELOCIDAD_AUTO_BASE = 8
 VELOCIDAD_CARRETERA_BASE = 12
 VELOCIDAD_OBSTACULO_BASE = 9
 
@@ -48,7 +48,7 @@ nivel = 1
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 # Ruta relativa de la imagen
-ruta_auto = '../img/f1real.png'
+ruta_auto = '../img/autoamarillo.png'
 ruta_obstaculo = '../img/auto.png'
 
 # Imprimir la ruta absoluta para verificar

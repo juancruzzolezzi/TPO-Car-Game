@@ -10,8 +10,8 @@ TPO - VIDEO JUEGO DE AUTOS.
 [o] modularizacion de codigo.
 [o] agregado de README.md.
 [o] creacion de score.
-[x] creacion de niveles.
-[x] modificacion de dificultad.
+[o] creacion de niveles.
+[o] modificacion de dificultad.
 [x] agregado de mas obstaculos con diferente imagen.
 [x] hacer el LogIn con regex.
 [x] que se grabe el record y un leaderboard de maximo 10 max scores.
