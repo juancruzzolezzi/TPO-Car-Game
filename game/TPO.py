@@ -13,9 +13,6 @@ COLOR_FONDO = (16, 174, 6)  # Verde pasto (Lawn Green)
 COLOR_CARRETERA = (50, 50, 50)  # Gris oscuro
 COLOR_LINEA = (255, 255, 255)  # Blanco para las líneas de la carretera
 FPS = 60
-# VELOCIDAD_AUTO = 25
-# VELOCIDAD_CARRETERA = 50
-# VELOCIDAD_OBSTACULO = 22
 INCREMENTO_VELOCIDAD_AUTO = 1
 INCREMENTO_VELOCIDAD_CARRETERA = 5
 INCREMENTO_VELOCIDAD_OBSTACULO = 2
@@ -126,11 +123,56 @@ def actualizar_nivel():
         velocidad_obstaculo = min(VELOCIDAD_OBSTACULO_BASE + (nivel * INCREMENTO_VELOCIDAD_OBSTACULO), VELOCIDAD_OBSTACULO_MAX)
         print(f"Nivel: {nivel} - Velocidad Auto: {velocidad_auto}, Velocidad Carretera: {velocidad_carretera}, Velocidad Obstáculo: {velocidad_obstaculo}")
 
+# Función para mostrar la pantalla de "Game Over" con botones
+def mostrar_pantalla_game_over(pantalla, fuente, puntuacion):
+    pantalla.fill(COLOR_FONDO)
+    texto_game_over = fuente.render(f"¡Game Over! Puntuación: {puntuacion}", True, (255, 0, 0))
+    pantalla.blit(texto_game_over, (ANCHO // 2 - texto_game_over.get_width() // 2, ALTO // 2 - texto_game_over.get_height() // 2 - 40))
+
+    # Crear botones
+    boton_reiniciar = pygame.Rect(ANCHO // 2 - 100, ALTO // 2, 200, 50)
+    boton_salir = pygame.Rect(ANCHO // 2 - 100, ALTO // 2 + 60, 200, 50)
+
+    pygame.draw.rect(pantalla, (0, 255, 0), boton_reiniciar)
+    pygame.draw.rect(pantalla, (255, 0, 0), boton_salir)
+
+    texto_reiniciar = fuente.render("Reiniciar", True, (0, 0, 0))
+    texto_salir = fuente.render("Salir", True, (0, 0, 0))
+
+    pantalla.blit(texto_reiniciar, (boton_reiniciar.x + (boton_reiniciar.width - texto_reiniciar.get_width()) // 2, boton_reiniciar.y + (boton_reiniciar.height - texto_reiniciar.get_height()) // 2))
+    pantalla.blit(texto_salir, (boton_salir.x + (boton_salir.width - texto_salir.get_width()) // 2, boton_salir.y + (boton_salir.height - texto_salir.get_height()) // 2))
+
+    pygame.display.flip()
+
+    # Esperar a que el jugador haga clic en un botón
+    while True:
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if evento.type == pygame.MOUSEBUTTONDOWN:
+                if boton_reiniciar.collidepoint(evento.pos):
+                    return True  # Reiniciar el juego
+                if boton_salir.collidepoint(evento.pos):
+                    pygame.quit()
+                    sys.exit()
+
+# Función para reiniciar el juego
+def reiniciar_juego():
+    global distancia_recorrida, puntuacion, velocidad_auto, velocidad_carretera, velocidad_obstaculo, nivel, obstaculos, auto_rect
+    distancia_recorrida = 0
+    puntuacion = 0
+    velocidad_auto = VELOCIDAD_AUTO_BASE
+    velocidad_carretera = VELOCIDAD_CARRETERA_BASE
+    velocidad_obstaculo = VELOCIDAD_OBSTACULO_BASE
+    nivel = 1
+    obstaculos = []
+    auto_rect = auto_imagen.get_rect(center=(ANCHO // 2, ALTO - 60))
 
 # Bucle principal del juego
 while True:
     for evento in pygame.event.get():
-        if (evento.type == pygame.QUIT):
+        if evento.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
 
@@ -179,8 +221,11 @@ while True:
         obstaculo.y += VELOCIDAD_OBSTACULO_BASE
         if auto_rect.colliderect(obstaculo):
             print("¡Choque! Juego terminado.")
-            pygame.quit()
-            sys.exit()
+            if mostrar_pantalla_game_over(pantalla, fuente, puntuacion):
+                reiniciar_juego()
+            else:
+                pygame.quit()
+                sys.exit()
 
     # Eliminar obstáculos que han salido de la pantalla y aumentar la puntuación
     nuevos_obstaculos = []
@@ -222,6 +267,8 @@ while True:
     pantalla.blit(texto_distancia, (10, 10))
     pantalla.blit(texto_puntuacion, (10, 40))
     pantalla.blit(texto_nivel, (10, 70))
+
+
 
     # Actualizar la pantalla
     pygame.display.flip()
