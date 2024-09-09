@@ -10,6 +10,7 @@ pygame.init()
 ANCHO = 800
 ALTO = 600
 COLOR_FONDO = (16, 174, 6)  # Verde pasto (Lawn Green)
+COLOR_GAME_OVER = (0, 0, 0)
 COLOR_CARRETERA = (50, 50, 50)  # Gris oscuro
 COLOR_LINEA = (255, 255, 255)  # Blanco para las líneas de la carretera
 FPS = 60
@@ -125,13 +126,22 @@ def actualizar_nivel():
 
 # Función para mostrar la pantalla de "Game Over" con botones
 def mostrar_pantalla_game_over(pantalla, fuente, puntuacion):
-    pantalla.fill(COLOR_FONDO)
-    texto_game_over = fuente.render(f"¡Game Over! Puntuación: {puntuacion}", True, (255, 0, 0))
-    pantalla.blit(texto_game_over, (ANCHO // 2 - texto_game_over.get_width() // 2, ALTO // 2 - texto_game_over.get_height() // 2 - 40))
+    pantalla.fill(COLOR_GAME_OVER)
+    
+    fuente_game_over = pygame.font.Font(None, 72)  # Tamaño más grande para "Game Over"
+    fuente_puntuacion = pygame.font.Font(None, 48)
 
-    # Crear botones
-    boton_reiniciar = pygame.Rect(ANCHO // 2 - 100, ALTO // 2, 200, 50)
-    boton_salir = pygame.Rect(ANCHO // 2 - 100, ALTO // 2 + 60, 200, 50)
+    # Renderizar y dibujar el texto de "Game Over"
+    texto_game_over = fuente_game_over.render(f"¡Game Over!", True, (255, 255, 255))
+    pantalla.blit(texto_game_over, (ANCHO // 2 - texto_game_over.get_width() // 2, ALTO // 2 - texto_game_over.get_height() // 2 - 60))
+
+    # Renderizar y dibujar el texto de la puntuación con un gap de 20 píxeles
+    texto_puntuacion = fuente_puntuacion.render(f"Puntuación: {puntuacion}", True, (255, 255, 255))
+    pantalla.blit(texto_puntuacion, (ANCHO // 2 - texto_puntuacion.get_width() // 2, ALTO // 2 - texto_puntuacion.get_height() // 2))
+
+    # Crear botones de pantalla de end game, moviéndolos más abajo
+    boton_reiniciar = pygame.Rect(ANCHO // 2 - 100, ALTO // 2 + 40, 200, 50)
+    boton_salir = pygame.Rect(ANCHO // 2 - 100, ALTO // 2 + 100, 200, 50)
 
     pygame.draw.rect(pantalla, (0, 255, 0), boton_reiniciar)
     pygame.draw.rect(pantalla, (255, 0, 0), boton_salir)
