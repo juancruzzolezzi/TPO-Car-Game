@@ -2,6 +2,7 @@ import pygame
 import sys
 import os
 import random
+## tkinter libreria de python para usar js en el front
 
 # Inicializar Pygame
 pygame.init()
@@ -127,7 +128,7 @@ def actualizar_nivel():
 # Función para mostrar la pantalla de "Game Over" con botones
 def mostrar_pantalla_game_over(pantalla, fuente, puntuacion):
     pantalla.fill(COLOR_GAME_OVER)
-    
+
     fuente_game_over = pygame.font.Font(None, 72)  # Tamaño más grande para "Game Over"
     fuente_puntuacion = pygame.font.Font(None, 48)
 
