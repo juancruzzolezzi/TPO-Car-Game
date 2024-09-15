@@ -2,53 +2,19 @@ import pygame
 import sys
 import os
 import random
-## tkinter libreria de python para usar js en el front
+from utils.constants import *
+from utils.functions import *
+# tkinter libreria de python para usar js en el front
 
 # Inicializar Pygame
 pygame.init()
 
-# Constantes
-ANCHO = 800
-ALTO = 600
-COLOR_FONDO = (16, 174, 6)  # Verde pasto (Lawn Green)
-COLOR_GAME_OVER = (0, 0, 0)
-COLOR_CARRETERA = (50, 50, 50)  # Gris oscuro
-COLOR_LINEA = (255, 255, 255)  # Blanco para las líneas de la carretera
-FPS = 60
-INCREMENTO_VELOCIDAD_AUTO = 1
-INCREMENTO_VELOCIDAD_CARRETERA = 5
-INCREMENTO_VELOCIDAD_OBSTACULO = 2
-ANCHO_CARRETERA = 400
-MARGEN_CARRETERA = (ANCHO - ANCHO_CARRETERA) // 2  # Centrando la carretera
-
-# Inicializar variables de distancia y puntuación
-distancia_recorrida = 0
-puntuacion = 0
-
-# Constantes modificadas
-VELOCIDAD_AUTO_BASE = 8
-VELOCIDAD_CARRETERA_BASE = 12
-VELOCIDAD_OBSTACULO_BASE = 9
-
-VELOCIDAD_AUTO_MAX = 32
-VELOCIDAD_CARRETERA_MAX = 50
-VELOCIDAD_OBSTACULO_MAX = 30
-
-DISTANCIA_PARA_SUBIR_NIVEL = 100
-
-# Inicializar variables de velocidad
-velocidad_auto = VELOCIDAD_AUTO_BASE
-velocidad_carretera = VELOCIDAD_CARRETERA_BASE
-velocidad_obstaculo = VELOCIDAD_OBSTACULO_BASE
-
-nivel = 1
-
-# Cambiar el directorio de trabajo al directorio del script (con esto se puede modularizar el codigo)
+# Cambiar el directorio de trabajo al directorio del script
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 # Ruta relativa de la imagen
-ruta_auto = '../img/autoamarillo.png'
-ruta_obstaculo = '../img/auto.png'
+ruta_auto = 'assets/img/autoamarillo.png'
+ruta_obstaculo = 'assets/img/auto.png'
 
 # Imprimir la ruta absoluta para verificar
 print("Ruta absoluta del auto:", os.path.abspath(ruta_auto))
@@ -61,7 +27,7 @@ pygame.display.set_caption("Juego de Autos")
 # Cargar la imagen del auto con transparencia
 try:
     auto_imagen = pygame.image.load(ruta_auto).convert_alpha()
-    auto_imagen = pygame.transform.scale(auto_imagen, (72, 130))  # Ajustar el tamaño si es necesario
+    auto_imagen = pygame.transform.scale(auto_imagen, (72, 130))  # Ajustar el tamaño
 except pygame.error:
     print("No se pudo cargar la imagen del auto. Asegúrate de tener un archivo '.png' en el directorio.")
     pygame.quit()
@@ -72,14 +38,11 @@ auto_rect = auto_imagen.get_rect(center=(ANCHO // 2, ALTO - 60))
 # Cargar la imagen del obstáculo
 try:
     obstaculo_imagen = pygame.image.load(ruta_obstaculo).convert_alpha()
-    obstaculo_imagen = pygame.transform.scale(obstaculo_imagen, (50, 50))  # Ajustar el tamaño si es necesario
+    obstaculo_imagen = pygame.transform.scale(obstaculo_imagen, (50, 50))
 except pygame.error:
-    print("No se pudo cargar la imagen del obstáculo. Asegúrate de tener un archivo '.png' en el directorio.")
+    print("No se pudo cargar la imagen del obstáculo.")
     pygame.quit()
     sys.exit()
-
-# Lista para almacenar los obstáculos
-obstaculos = []
 
 # Crear la carretera
 carretera_superior = pygame.Surface((ANCHO_CARRETERA, ALTO))
@@ -93,83 +56,11 @@ carretera_rect_inferior = carretera_inferior.get_rect(topleft=(MARGEN_CARRETERA,
 # Fuente para mostrar la distancia y la puntuación
 fuente = pygame.font.Font(None, 36)
 
-# Función para crear un nuevo obstáculo
-def crear_obstaculo():
-    max_intentos = 10  # Máximo número de intentos para colocar un obstáculo sin que esté superpuesto
-    for _ in range(max_intentos):
-        x_obstaculo = random.randint(MARGEN_CARRETERA, ANCHO - MARGEN_CARRETERA - obstaculo_imagen.get_width())
-        obstaculo_rect = obstaculo_imagen.get_rect(topleft=(x_obstaculo, -obstaculo_imagen.get_height()))
-
-        # Verificar si el nuevo obstáculo está muy cerca de otros obstáculos
-        superpuesto = False
-        for obstaculo in obstaculos:
-            if obstaculo_rect.colliderect(obstaculo):
-                superpuesto = True
-                break
-
-        if not superpuesto:
-            obstaculos.append(obstaculo_rect)
-            break  # Salir del bucle si se ha colocado un obstáculo sin superposición
-
 # Reloj para controlar FPS
 reloj = pygame.time.Clock()
 
-# Función para actualizar las velocidades y el nivel
-def actualizar_nivel():
-    global nivel, velocidad_auto, velocidad_carretera, velocidad_obstaculo
-
-    if distancia_recorrida >= nivel * DISTANCIA_PARA_SUBIR_NIVEL:
-        nivel += 1
-        velocidad_auto = min(VELOCIDAD_AUTO_BASE + (nivel * INCREMENTO_VELOCIDAD_AUTO), VELOCIDAD_AUTO_MAX)
-        velocidad_carretera = min(VELOCIDAD_CARRETERA_BASE + (nivel * INCREMENTO_VELOCIDAD_CARRETERA), VELOCIDAD_CARRETERA_MAX)
-        velocidad_obstaculo = min(VELOCIDAD_OBSTACULO_BASE + (nivel * INCREMENTO_VELOCIDAD_OBSTACULO), VELOCIDAD_OBSTACULO_MAX)
-        print(f"Nivel: {nivel} - Velocidad Auto: {velocidad_auto}, Velocidad Carretera: {velocidad_carretera}, Velocidad Obstáculo: {velocidad_obstaculo}")
-
-# Función para mostrar la pantalla de "Game Over" con botones
-def mostrar_pantalla_game_over(pantalla, fuente, puntuacion):
-    pantalla.fill(COLOR_GAME_OVER)
-
-    fuente_game_over = pygame.font.Font(None, 72)  # Tamaño más grande para "Game Over"
-    fuente_puntuacion = pygame.font.Font(None, 48)
-
-    # Renderizar y dibujar el texto de "Game Over"
-    texto_game_over = fuente_game_over.render(f"¡Game Over!", True, (255, 255, 255))
-    pantalla.blit(texto_game_over, (ANCHO // 2 - texto_game_over.get_width() // 2, ALTO // 2 - texto_game_over.get_height() // 2 - 60))
-
-    # Renderizar y dibujar el texto de la puntuación con un gap de 20 píxeles
-    texto_puntuacion = fuente_puntuacion.render(f"Puntuación: {puntuacion}", True, (255, 255, 255))
-    pantalla.blit(texto_puntuacion, (ANCHO // 2 - texto_puntuacion.get_width() // 2, ALTO // 2 - texto_puntuacion.get_height() // 2))
-
-    # Crear botones de pantalla de end game, moviéndolos más abajo
-    boton_reiniciar = pygame.Rect(ANCHO // 2 - 100, ALTO // 2 + 40, 200, 50)
-    boton_salir = pygame.Rect(ANCHO // 2 - 100, ALTO // 2 + 100, 200, 50)
-
-    pygame.draw.rect(pantalla, (0, 255, 0), boton_reiniciar)
-    pygame.draw.rect(pantalla, (255, 0, 0), boton_salir)
-
-    texto_reiniciar = fuente.render("Reiniciar", True, (0, 0, 0))
-    texto_salir = fuente.render("Salir", True, (0, 0, 0))
-
-    pantalla.blit(texto_reiniciar, (boton_reiniciar.x + (boton_reiniciar.width - texto_reiniciar.get_width()) // 2, boton_reiniciar.y + (boton_reiniciar.height - texto_reiniciar.get_height()) // 2))
-    pantalla.blit(texto_salir, (boton_salir.x + (boton_salir.width - texto_salir.get_width()) // 2, boton_salir.y + (boton_salir.height - texto_salir.get_height()) // 2))
-
-    pygame.display.flip()
-
-    # Esperar a que el jugador haga clic en un botón
-    while True:
-        for evento in pygame.event.get():
-            if evento.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if evento.type == pygame.MOUSEBUTTONDOWN:
-                if boton_reiniciar.collidepoint(evento.pos):
-                    return True  # Reiniciar el juego
-                if boton_salir.collidepoint(evento.pos):
-                    pygame.quit()
-                    sys.exit()
-
 # Función para reiniciar el juego
-def reiniciar_juego():
+def reiniciar_juego(VELOCIDAD_AUTO_BASE, VELOCIDAD_CARRETERA_BASE, VELOCIDAD_OBSTACULO_BASE, auto_imagen, ANCHO, ALTO):
     global distancia_recorrida, puntuacion, velocidad_auto, velocidad_carretera, velocidad_obstaculo, nivel, obstaculos, auto_rect
     distancia_recorrida = 0
     puntuacion = 0
@@ -210,12 +101,11 @@ while True:
     # Mover la carretera
     carretera_rect_superior.y += VELOCIDAD_CARRETERA_BASE
     carretera_rect_inferior.y += VELOCIDAD_CARRETERA_BASE
-    
     # Actualizar la distancia recorrida
     distancia_recorrida += VELOCIDAD_CARRETERA_BASE / FPS
     
     # Actualizar el nivel del juego
-    actualizar_nivel()
+    actualizar_nivel(DISTANCIA_PARA_SUBIR_NIVEL, VELOCIDAD_AUTO_BASE, INCREMENTO_VELOCIDAD_AUTO, VELOCIDAD_AUTO_MAX, VELOCIDAD_CARRETERA_BASE, INCREMENTO_VELOCIDAD_CARRETERA, VELOCIDAD_CARRETERA_MAX, VELOCIDAD_OBSTACULO_BASE, INCREMENTO_VELOCIDAD_OBSTACULO, VELOCIDAD_OBSTACULO_MAX, velocidad_auto, velocidad_carretera, velocidad_obstaculo, nivel)
 
     # Volver a posicionar la carretera
     if carretera_rect_superior.y >= ALTO:
@@ -225,15 +115,15 @@ while True:
 
     # Crear un nuevo obstáculo de forma aleatoria
     if random.randint(0, 100) < 1:  # 1% de probabilidad por frame de crear un nuevo obstáculo
-        crear_obstaculo()
+        crear_obstaculo(MARGEN_CARRETERA, ANCHO, obstaculo_imagen, obstaculos)
 
     # Mover los obstáculos y detectar colisiones
     for obstaculo in obstaculos:
         obstaculo.y += VELOCIDAD_OBSTACULO_BASE
         if auto_rect.colliderect(obstaculo):
             print("¡Choque! Juego terminado.")
-            if mostrar_pantalla_game_over(pantalla, fuente, puntuacion):
-                reiniciar_juego()
+            if mostrar_pantalla_game_over(pantalla, fuente, puntuacion, ANCHO, ALTO, COLOR_GAME_OVER):
+                reiniciar_juego(VELOCIDAD_AUTO_BASE, VELOCIDAD_CARRETERA_BASE, VELOCIDAD_OBSTACULO_BASE, auto_imagen, ANCHO, ALTO)
             else:
                 pygame.quit()
                 sys.exit()
@@ -278,8 +168,6 @@ while True:
     pantalla.blit(texto_distancia, (10, 10))
     pantalla.blit(texto_puntuacion, (10, 40))
     pantalla.blit(texto_nivel, (10, 70))
-
-
 
     # Actualizar la pantalla
     pygame.display.flip()

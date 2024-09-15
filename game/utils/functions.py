@@ -6,7 +6,7 @@ from .constants import *
 import random
 
 # Función para crear un nuevo obstáculo
-def crear_obstaculo(MARGEN_CARRETERA, ANCHO, obstaculo_imagen):
+def crear_obstaculo(MARGEN_CARRETERA, ANCHO, obstaculo_imagen, obstaculos):
     max_intentos = 10  # Máximo número de intentos para colocar un obstáculo sin que esté superpuesto
     for _ in range(max_intentos):
         x_obstaculo = random.randint(MARGEN_CARRETERA, ANCHO - MARGEN_CARRETERA - obstaculo_imagen.get_width())
@@ -15,17 +15,16 @@ def crear_obstaculo(MARGEN_CARRETERA, ANCHO, obstaculo_imagen):
         # Verificar si el nuevo obstáculo está muy cerca de otros obstáculos
         superpuesto = False
         for obstaculo in obstaculos:
-            if obstaculo_rect.colliderect(obstaculo['rect']):
+            if obstaculo_rect.colliderect(obstaculo):
                 superpuesto = True
                 break
 
         if not superpuesto:
-            return {'imagen': obstaculo_imagen, 'rect': obstaculo_rect, 'tipo': 'auto'}
-    return None  # Si no se pudo colocar un obstáculo sin superposición
-        
+            obstaculos.append(obstaculo_rect)
+            break  # Salir del bucle si se ha colocado un obstáculo sin superposición
+
 # Función para actualizar las velocidades y el nivel
-def actualizar_nivel(DISTANCIA_PARA_SUBIR_NIVEL, VELOCIDAD_AUTO_BASE, INCREMENTO_VELOCIDAD_AUTO, VELOCIDAD_AUTO_MAX, VELOCIDAD_CARRETERA_BASE, INCREMENTO_VELOCIDAD_CARRETERA, VELOCIDAD_CARRETERA_MAX, VELOCIDAD_OBSTACULO_BASE, INCREMENTO_VELOCIDAD_OBSTACULO, VELOCIDAD_OBSTACULO_MAX):
-    global nivel, velocidad_auto, velocidad_carretera, velocidad_obstaculo
+def actualizar_nivel(DISTANCIA_PARA_SUBIR_NIVEL, VELOCIDAD_AUTO_BASE, INCREMENTO_VELOCIDAD_AUTO, VELOCIDAD_AUTO_MAX, VELOCIDAD_CARRETERA_BASE, INCREMENTO_VELOCIDAD_CARRETERA, VELOCIDAD_CARRETERA_MAX, VELOCIDAD_OBSTACULO_BASE, INCREMENTO_VELOCIDAD_OBSTACULO, VELOCIDAD_OBSTACULO_MAX, velocidad_auto, velocidad_carretera, velocidad_obstaculo, nivel):
 
     if distancia_recorrida >= nivel * DISTANCIA_PARA_SUBIR_NIVEL:
         nivel += 1
@@ -34,8 +33,10 @@ def actualizar_nivel(DISTANCIA_PARA_SUBIR_NIVEL, VELOCIDAD_AUTO_BASE, INCREMENTO
         velocidad_obstaculo = min(VELOCIDAD_OBSTACULO_BASE + (nivel * INCREMENTO_VELOCIDAD_OBSTACULO), VELOCIDAD_OBSTACULO_MAX)
         print(f"Nivel: {nivel} - Velocidad Auto: {velocidad_auto}, Velocidad Carretera: {velocidad_carretera}, Velocidad Obstáculo: {velocidad_obstaculo}")
         
+        return nivel, velocidad_auto, velocidad_carretera, velocidad_obstaculo
+        
 # Función para mostrar la pantalla de "Game Over" con botones
-def mostrar_pantalla_game_over(pantalla, fuente, puntuacion, COLOR_GAME_OVER, ANCHO, ALTO):
+def mostrar_pantalla_game_over(pantalla, fuente, puntuacion, ANCHO, ALTO, COLOR_GAME_OVER):
     pantalla.fill(COLOR_GAME_OVER)
 
     fuente_game_over = pygame.font.Font(None, 72)  # Tamaño más grande para "Game Over"
@@ -76,29 +77,3 @@ def mostrar_pantalla_game_over(pantalla, fuente, puntuacion, COLOR_GAME_OVER, AN
                 if boton_salir.collidepoint(evento.pos):
                     pygame.quit()
                     sys.exit()
-                    
-# Función para reiniciar el juego
-def reiniciar_juego(VELOCIDAD_AUTO_BASE, VELOCIDAD_CARRETERA_BASE, VELOCIDAD_OBSTACULO_BASE, auto_imagen, ANCHO, ALTO):
-    global distancia_recorrida, puntuacion, velocidad_auto, velocidad_carretera, velocidad_obstaculo, nivel, obstaculos, auto_rect
-    distancia_recorrida = 0
-    puntuacion = 0
-    velocidad_auto = VELOCIDAD_AUTO_BASE
-    velocidad_carretera = VELOCIDAD_CARRETERA_BASE
-    velocidad_obstaculo = VELOCIDAD_OBSTACULO_BASE
-    nivel = 1
-    obstaculos = []
-    auto_rect = auto_imagen.get_rect(center=(ANCHO // 2, ALTO - 60))
-    
-# Función para manejar eventos
-def manejar_eventos(eventos, boton_reiniciar, boton_salir):
-    for evento in eventos:
-        if evento.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-        elif evento.type == pygame.MOUSEBUTTONDOWN:
-            if boton_reiniciar.collidepoint(evento.pos):
-                return True  # Indica que se debe reiniciar el juego
-            elif boton_salir.collidepoint(evento.pos):
-                pygame.quit()
-                sys.exit()
-    return False

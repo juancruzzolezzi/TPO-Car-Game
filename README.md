@@ -7,7 +7,7 @@ TPO - VIDEO JUEGO DE AUTOS.
 [o] creacion de obstaculos.
 [o] seteo de game over.
 [o] definicion de dificultad.
-[o] modularizacion de codigo.
+[o] modularizacion de codigo. 160 lineas aprx es el optimo.
 [o] agregado de README.md.
 [o] creacion de score.
 [o] creacion de niveles.
