@@ -55,6 +55,8 @@ carretera_rect_inferior = carretera_inferior.get_rect(topleft=(MARGEN_CARRETERA,
 
 # Fuente para mostrar la distancia y la puntuación
 fuente = pygame.font.Font(None, 36)
+# Fuente más grande para el texto de pausa
+fuente_pausa = pygame.font.Font(None, 72)
 
 # Reloj para controlar FPS
 reloj = pygame.time.Clock()
@@ -77,65 +79,75 @@ while True:
         if evento.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+        if evento.type == pygame.KEYDOWN:
+            if evento.key == pygame.K_SPACE:
+                pausado = not pausado  # Alternar el estado de pausa
 
-    # Manejar entrada del teclado
-    teclas = pygame.key.get_pressed()
-    if teclas[pygame.K_UP]:
-        auto_rect.y -= VELOCIDAD_AUTO_BASE
-    if teclas[pygame.K_DOWN]:
-        auto_rect.y += VELOCIDAD_AUTO_BASE
-    if teclas[pygame.K_LEFT]:
-        auto_rect.x -= VELOCIDAD_AUTO_BASE
-    if teclas[pygame.K_RIGHT]:
-        auto_rect.x += VELOCIDAD_AUTO_BASE
+    if not pausado:
+        # Lógica del juego cuando no está en pausa
+        teclas = pygame.key.get_pressed()
+        if teclas[pygame.K_UP]:
+            auto_rect.y -= VELOCIDAD_AUTO_BASE
+        if teclas[pygame.K_DOWN]:
+            auto_rect.y += VELOCIDAD_AUTO_BASE
+        if teclas[pygame.K_LEFT]:
+            auto_rect.x -= VELOCIDAD_AUTO_BASE
+        if teclas[pygame.K_RIGHT]:
+            auto_rect.x += VELOCIDAD_AUTO_BASE
 
-    # Mantener el auto dentro de la carretera
-    if auto_rect.left < MARGEN_CARRETERA:
-        auto_rect.left = MARGEN_CARRETERA
-    if auto_rect.right > ANCHO - MARGEN_CARRETERA:
-        auto_rect.right = ANCHO - MARGEN_CARRETERA
+        # Mantener el auto dentro de la carretera
+        if auto_rect.left < MARGEN_CARRETERA:
+            auto_rect.left = MARGEN_CARRETERA
+        if auto_rect.right > ANCHO - MARGEN_CARRETERA:
+            auto_rect.right = ANCHO - MARGEN_CARRETERA
 
-    # Mantener el auto dentro de la pantalla
-    auto_rect.y = max(0, min(auto_rect.y, ALTO - auto_rect.height))
+        # Mantener el auto dentro de la pantalla
+        auto_rect.y = max(0, min(auto_rect.y, ALTO - auto_rect.height))
 
-    # Mover la carretera
-    carretera_rect_superior.y += VELOCIDAD_CARRETERA_BASE
-    carretera_rect_inferior.y += VELOCIDAD_CARRETERA_BASE
-    # Actualizar la distancia recorrida
-    distancia_recorrida += VELOCIDAD_CARRETERA_BASE / FPS
-    
-    # Actualizar el nivel del juego
-    actualizar_nivel(DISTANCIA_PARA_SUBIR_NIVEL, VELOCIDAD_AUTO_BASE, INCREMENTO_VELOCIDAD_AUTO, VELOCIDAD_AUTO_MAX, VELOCIDAD_CARRETERA_BASE, INCREMENTO_VELOCIDAD_CARRETERA, VELOCIDAD_CARRETERA_MAX, VELOCIDAD_OBSTACULO_BASE, INCREMENTO_VELOCIDAD_OBSTACULO, VELOCIDAD_OBSTACULO_MAX, velocidad_auto, velocidad_carretera, velocidad_obstaculo, nivel)
+        # Mover la carretera
+        carretera_rect_superior.y += VELOCIDAD_CARRETERA_BASE
+        carretera_rect_inferior.y += VELOCIDAD_CARRETERA_BASE
 
-    # Volver a posicionar la carretera
-    if carretera_rect_superior.y >= ALTO:
-        carretera_rect_superior.y = carretera_rect_inferior.y - ALTO
-    if carretera_rect_inferior.y >= ALTO:
-        carretera_rect_inferior.y = carretera_rect_superior.y - ALTO
+        # Actualizar la distancia recorrida
+        distancia_recorrida += VELOCIDAD_CARRETERA_BASE / FPS
 
-    # Crear un nuevo obstáculo de forma aleatoria
-    if random.randint(0, 100) < 1:  # 1% de probabilidad por frame de crear un nuevo obstáculo
-        crear_obstaculo(MARGEN_CARRETERA, ANCHO, obstaculo_imagen, obstaculos)
+        # Actualizar el nivel y las velocidades
+        nivel, velocidad_auto, velocidad_carretera, velocidad_obstaculo = actualizar_nivel(
+            distancia_recorrida, nivel, DISTANCIA_PARA_SUBIR_NIVEL, VELOCIDAD_AUTO_BASE, INCREMENTO_VELOCIDAD_AUTO, VELOCIDAD_AUTO_MAX,
+            VELOCIDAD_CARRETERA_BASE, INCREMENTO_VELOCIDAD_CARRETERA, VELOCIDAD_CARRETERA_MAX,
+            VELOCIDAD_OBSTACULO_BASE, INCREMENTO_VELOCIDAD_OBSTACULO, VELOCIDAD_OBSTACULO_MAX,
+            velocidad_auto, velocidad_carretera, velocidad_obstaculo
+        )
 
-    # Mover los obstáculos y detectar colisiones
-    for obstaculo in obstaculos:
-        obstaculo.y += VELOCIDAD_OBSTACULO_BASE
-        if auto_rect.colliderect(obstaculo):
-            print("¡Choque! Juego terminado.")
-            if mostrar_pantalla_game_over(pantalla, fuente, puntuacion, ANCHO, ALTO, COLOR_GAME_OVER):
-                reiniciar_juego(VELOCIDAD_AUTO_BASE, VELOCIDAD_CARRETERA_BASE, VELOCIDAD_OBSTACULO_BASE, auto_imagen, ANCHO, ALTO)
+        # Volver a posicionar la carretera
+        if carretera_rect_superior.y >= ALTO:
+            carretera_rect_superior.y = carretera_rect_inferior.y - ALTO
+        if carretera_rect_inferior.y >= ALTO:
+            carretera_rect_inferior.y = carretera_rect_superior.y - ALTO
+
+        # Crear un nuevo obstáculo de forma aleatoria
+        if random.randint(0, 100) < 1:  # 1% de probabilidad por frame de crear un nuevo obstáculo
+            crear_obstaculo(MARGEN_CARRETERA, ANCHO, obstaculo_imagen, obstaculos)
+
+        # Mover los obstáculos y detectar colisiones
+        for obstaculo in obstaculos:
+            obstaculo.y += VELOCIDAD_OBSTACULO_BASE
+            if auto_rect.colliderect(obstaculo):
+                print("¡Choque! Juego terminado.")
+                if mostrar_pantalla_game_over(pantalla, fuente, puntuacion, ANCHO, ALTO, COLOR_GAME_OVER):
+                    reiniciar_juego(VELOCIDAD_AUTO_BASE, VELOCIDAD_CARRETERA_BASE, VELOCIDAD_OBSTACULO_BASE, auto_imagen, ANCHO, ALTO)
+                else:
+                    pygame.quit()
+                    sys.exit()
+
+        # Eliminar obstáculos que han salido de la pantalla y aumentar la puntuación
+        nuevos_obstaculos = []
+        for obstaculo in obstaculos:
+            if obstaculo.y >= ALTO:
+                puntuacion += 1
             else:
-                pygame.quit()
-                sys.exit()
-
-    # Eliminar obstáculos que han salido de la pantalla y aumentar la puntuación
-    nuevos_obstaculos = []
-    for obstaculo in obstaculos:
-        if obstaculo.y >= ALTO:
-            puntuacion += 1
-        else:
-            nuevos_obstaculos.append(obstaculo)
-    obstaculos = nuevos_obstaculos
+                nuevos_obstaculos.append(obstaculo)
+        obstaculos = nuevos_obstaculos
 
     # Actualizar la pantalla
     pantalla.fill(COLOR_FONDO)
@@ -152,7 +164,7 @@ while True:
         pygame.draw.line(pantalla, COLOR_LINEA, 
                          (ANCHO // 2, y), 
                          (ANCHO // 2, y + linea_largo), 
-                            linea_ancho)
+                         linea_ancho)
 
     # Dibujar el auto
     pantalla.blit(auto_imagen, auto_rect)
@@ -160,14 +172,20 @@ while True:
     # Dibujar obstáculos
     for obstaculo in obstaculos:
         pantalla.blit(obstaculo_imagen, obstaculo)
-        
+
     # Mostrar la distancia y la puntuación
-    texto_distancia = fuente.render(f"Distancia: {int(distancia_recorrida)} mts", True, (255, 255, 255))
     texto_puntuacion = fuente.render(f"Puntuación: {puntuacion}", True, (255, 255, 255))
     texto_nivel = fuente.render(f"Nivel: {nivel}", True, (255, 255, 255))
-    pantalla.blit(texto_distancia, (10, 10))
-    pantalla.blit(texto_puntuacion, (10, 40))
-    pantalla.blit(texto_nivel, (10, 70))
+    texto_distancia = fuente.render(f"Distancia: ", True, (255, 255, 255))
+    texto_puntuacion_valor = fuente.render(f"{int(distancia_recorrida)} mts", True, (255, 255, 255))
+    pantalla.blit(texto_puntuacion, (10, 10))
+    pantalla.blit(texto_nivel, (10, 60))
+    pantalla.blit(texto_distancia, (10, 100))
+    pantalla.blit(texto_puntuacion_valor, (10, 130))  # Ajustar la coordenada y para que esté en el siguiente renglón
+
+    
+    if pausado:
+        mostrar_pantalla_pausa(pantalla, fuente_pausa, ANCHO, ALTO)
 
     # Actualizar la pantalla
     pygame.display.flip()

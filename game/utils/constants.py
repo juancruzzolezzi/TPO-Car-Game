@@ -17,9 +17,9 @@ distancia_recorrida = 0
 puntuacion = 0
 
 # Constantes modificadas
-VELOCIDAD_AUTO_BASE = 8
-VELOCIDAD_CARRETERA_BASE = 12
-VELOCIDAD_OBSTACULO_BASE = 9
+VELOCIDAD_AUTO_BASE = 9  # Velocidad inicial baja
+VELOCIDAD_CARRETERA_BASE = 10  # Velocidad inicial baja
+VELOCIDAD_OBSTACULO_BASE = 10 # Velocidad inicial baja
 
 VELOCIDAD_AUTO_MAX = 32
 VELOCIDAD_CARRETERA_MAX = 50
@@ -32,7 +32,9 @@ velocidad_auto = VELOCIDAD_AUTO_BASE
 velocidad_carretera = VELOCIDAD_CARRETERA_BASE
 velocidad_obstaculo = VELOCIDAD_OBSTACULO_BASE
 
-nivel = 1
+nivel = 0
 
 # Lista para almacenar los obstáculos
 obstaculos = []
+
+pausado = False
