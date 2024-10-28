@@ -15,13 +15,14 @@ def crear_obstaculo(MARGEN_CARRETERA, ANCHO, obstaculo_imagen, obstaculos):
         # Verificar si el nuevo obstáculo está muy cerca de otros obstáculos
         superpuesto = False
         for obstaculo in obstaculos:
-            if obstaculo_rect.colliderect(obstaculo):
+            if obstaculo_rect.colliderect(obstaculo['rect']):
                 superpuesto = True
                 break
 
         if not superpuesto:
-            obstaculos.append(obstaculo_rect)
+            obstaculos.append({'imagen': obstaculo_imagen, 'rect': obstaculo_rect})
             break  # Salir del bucle si se ha colocado un obstáculo sin superposición
+
 
 def actualizar_nivel(distancia_recorrida, nivel, DISTANCIA_PARA_SUBIR_NIVEL, VELOCIDAD_AUTO_BASE, INCREMENTO_VELOCIDAD_AUTO, VELOCIDAD_AUTO_MAX, VELOCIDAD_CARRETERA_BASE, INCREMENTO_VELOCIDAD_CARRETERA, VELOCIDAD_CARRETERA_MAX, VELOCIDAD_OBSTACULO_BASE, INCREMENTO_VELOCIDAD_OBSTACULO, VELOCIDAD_OBSTACULO_MAX, velocidad_auto, velocidad_carretera, velocidad_obstaculo):
     if distancia_recorrida >= nivel * DISTANCIA_PARA_SUBIR_NIVEL:
@@ -61,7 +62,7 @@ def mostrar_pantalla_game_over(pantalla, fuente, puntuacion, ANCHO, ALTO, COLOR_
 
     pygame.display.flip()
     
-        # Esperar a que el jugador haga clic en un botón
+     # Esperar a que el jugador haga clic en un botón o presione una tecla
     while True:
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
@@ -79,6 +80,7 @@ def mostrar_pantalla_game_over(pantalla, fuente, puntuacion, ANCHO, ALTO, COLOR_
                 if evento.key == pygame.K_q:
                     pygame.quit()
                     sys.exit()
+            
 
 def mostrar_pantalla_pausa(pantalla, fuente_pausa, ANCHO, ALTO):
     # Crear una superficie semitransparente para nublar la pantalla

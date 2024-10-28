@@ -15,10 +15,13 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 # Ruta relativa de la imagen
 ruta_auto = 'assets/img/autoamarillo.png'
 ruta_obstaculo = 'assets/img/auto.png'
+ruta_cactus = 'assets/img/cactus.png'
 
 # Imprimir la ruta absoluta para verificar
 print("Ruta absoluta del auto:", os.path.abspath(ruta_auto))
 print("Ruta absoluta del obstáculo:", os.path.abspath(ruta_obstaculo))
+print("Ruta absoluta del cactus:", os.path.abspath(ruta_cactus))
+
 
 # Configurar pantalla
 pantalla = pygame.display.set_mode((ANCHO, ALTO))
@@ -35,7 +38,7 @@ except pygame.error:
 
 auto_rect = auto_imagen.get_rect(center=(ANCHO // 2, ALTO - 60))
 
-# Cargar la imagen del obstáculo
+# Cargar la imagen del auto obstáculo
 try:
     obstaculo_imagen = pygame.image.load(ruta_obstaculo).convert_alpha()
     obstaculo_imagen = pygame.transform.scale(obstaculo_imagen, (50, 50))
@@ -43,6 +46,17 @@ except pygame.error:
     print("No se pudo cargar la imagen del obstáculo.")
     pygame.quit()
     sys.exit()
+
+
+# Cargar la imagen del cactus
+try:
+    cactus_imagen = pygame.image.load(ruta_cactus).convert_alpha()
+    cactus_imagen = pygame.transform.scale(cactus_imagen, (60, 60)) 
+except pygame.error:
+    print("No se pudo cargar la imagen del cactus. Asegúrate de tener un archivo 'cactus.png' en el directorio 'assets/img'.")
+    pygame.quit()
+    sys.exit()
+
 
 # Crear la carretera
 carretera_superior = pygame.Surface((ANCHO_CARRETERA, ALTO))
@@ -128,11 +142,13 @@ while True:
         # Crear un nuevo obstáculo de forma aleatoria
         if random.randint(0, 100) < 1:  # 1% de probabilidad por frame de crear un nuevo obstáculo
             crear_obstaculo(MARGEN_CARRETERA, ANCHO, obstaculo_imagen, obstaculos)
-
+        if random.randint(0, 100) < 1:  # 1% de probabilidad por frame de crear un nuevo obstáculo
+            crear_obstaculo(MARGEN_CARRETERA, ANCHO, cactus_imagen, obstaculos)
+            
         # Mover los obstáculos y detectar colisiones
         for obstaculo in obstaculos:
-            obstaculo.y += VELOCIDAD_OBSTACULO_BASE
-            if auto_rect.colliderect(obstaculo):
+            obstaculo['rect'].y += VELOCIDAD_OBSTACULO_BASE
+            if auto_rect.colliderect(obstaculo['rect']):
                 print("¡Choque! Juego terminado.")
                 if mostrar_pantalla_game_over(pantalla, fuente, puntuacion, ANCHO, ALTO, COLOR_GAME_OVER):
                     reiniciar_juego(VELOCIDAD_AUTO_BASE, VELOCIDAD_CARRETERA_BASE, VELOCIDAD_OBSTACULO_BASE, auto_imagen, ANCHO, ALTO)
@@ -143,7 +159,7 @@ while True:
         # Eliminar obstáculos que han salido de la pantalla y aumentar la puntuación
         nuevos_obstaculos = []
         for obstaculo in obstaculos:
-            if obstaculo.y >= ALTO:
+            if obstaculo['rect'].y >= ALTO:
                 puntuacion += 1
             else:
                 nuevos_obstaculos.append(obstaculo)
@@ -171,7 +187,7 @@ while True:
 
     # Dibujar obstáculos
     for obstaculo in obstaculos:
-        pantalla.blit(obstaculo_imagen, obstaculo)
+        pantalla.blit(obstaculo['imagen'], obstaculo['rect'])
 
     # Mostrar la distancia y la puntuación
     texto_puntuacion = fuente.render(f"Puntuación: {puntuacion}", True, (255, 255, 255))
