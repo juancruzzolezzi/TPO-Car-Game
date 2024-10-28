@@ -53,8 +53,8 @@ def mostrar_pantalla_game_over(pantalla, fuente, puntuacion, ANCHO, ALTO, COLOR_
     pygame.draw.rect(pantalla, (0, 255, 0), boton_reiniciar)
     pygame.draw.rect(pantalla, (255, 0, 0), boton_salir)
 
-    texto_reiniciar = fuente.render("Reiniciar", True, (0, 0, 0))
-    texto_salir = fuente.render("Salir", True, (0, 0, 0))
+    texto_reiniciar = fuente.render("Reiniciar (R)", True, (0, 0, 0))
+    texto_salir = fuente.render("Salir (Q)", True, (0, 0, 0))
 
     pantalla.blit(texto_reiniciar, (boton_reiniciar.x + (boton_reiniciar.width - texto_reiniciar.get_width()) // 2, boton_reiniciar.y + (boton_reiniciar.height - texto_reiniciar.get_height()) // 2))
     pantalla.blit(texto_salir, (boton_salir.x + (boton_salir.width - texto_salir.get_width()) // 2, boton_salir.y + (boton_salir.height - texto_salir.get_height()) // 2))
@@ -71,6 +71,12 @@ def mostrar_pantalla_game_over(pantalla, fuente, puntuacion, ANCHO, ALTO, COLOR_
                 if boton_reiniciar.collidepoint(evento.pos):
                     return True  # Reiniciar el juego
                 if boton_salir.collidepoint(evento.pos):
+                    pygame.quit()
+                    sys.exit()
+            if evento.type == pygame.KEYDOWN:
+                if evento.key == pygame.K_r:
+                    return True  # Reiniciar el juego
+                if evento.key == pygame.K_q:
                     pygame.quit()
                     sys.exit()
 

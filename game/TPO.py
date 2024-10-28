@@ -164,7 +164,7 @@ while True:
         pygame.draw.line(pantalla, COLOR_LINEA, 
                          (ANCHO // 2, y), 
                          (ANCHO // 2, y + linea_largo), 
-                         linea_ancho)
+                            linea_ancho)
 
     # Dibujar el auto
     pantalla.blit(auto_imagen, auto_rect)
