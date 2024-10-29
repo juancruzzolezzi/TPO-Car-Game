@@ -5,6 +5,7 @@ import random
 from utils.constants import *
 from utils.functions import *
 # tkinter libreria de python para usar js en el front
+from PIL import Image, ImageEnhance  # Importar Pillow
 
 # Inicializar Pygame
 pygame.init()
@@ -30,7 +31,7 @@ pygame.display.set_caption("Juego de Autos")
 # Cargar la imagen del auto con transparencia
 try:
     auto_imagen = pygame.image.load(ruta_auto).convert_alpha()
-    auto_imagen = pygame.transform.scale(auto_imagen, (72, 130))  # Ajustar el tamaño
+    auto_imagen = pygame.transform.scale(auto_imagen, (72, 130))
 except pygame.error:
     print("No se pudo cargar la imagen del auto. Asegúrate de tener un archivo '.png' en el directorio.")
     pygame.quit()
@@ -48,10 +49,13 @@ except pygame.error:
     sys.exit()
 
 
-# Cargar la imagen del cactus
+# Cargar la imagen del cactus y ajustar el brillo
 try:
-    cactus_imagen = pygame.image.load(ruta_cactus).convert_alpha()
-    cactus_imagen = pygame.transform.scale(cactus_imagen, (50, 65)) 
+    cactus_imagen_pil = Image.open(ruta_cactus).convert("RGBA")
+    enhancer = ImageEnhance.Brightness(cactus_imagen_pil)
+    cactus_imagen_pil = enhancer.enhance(1.7)  
+    cactus_imagen = pygame.image.fromstring(cactus_imagen_pil.tobytes(), cactus_imagen_pil.size, cactus_imagen_pil.mode)
+    cactus_imagen = pygame.transform.scale(cactus_imagen, (50, 68))  
 except pygame.error:
     print("No se pudo cargar la imagen del cactus. Asegúrate de tener un archivo 'cactus.png' en el directorio 'assets/img'.")
     pygame.quit()
