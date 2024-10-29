@@ -41,7 +41,7 @@ auto_rect = auto_imagen.get_rect(center=(ANCHO // 2, ALTO - 60))
 # Cargar la imagen del auto obstáculo
 try:
     obstaculo_imagen = pygame.image.load(ruta_obstaculo).convert_alpha()
-    obstaculo_imagen = pygame.transform.scale(obstaculo_imagen, (50, 50))
+    obstaculo_imagen = pygame.transform.scale(obstaculo_imagen, (45, 65))
 except pygame.error:
     print("No se pudo cargar la imagen del obstáculo.")
     pygame.quit()
@@ -51,7 +51,7 @@ except pygame.error:
 # Cargar la imagen del cactus
 try:
     cactus_imagen = pygame.image.load(ruta_cactus).convert_alpha()
-    cactus_imagen = pygame.transform.scale(cactus_imagen, (60, 60)) 
+    cactus_imagen = pygame.transform.scale(cactus_imagen, (50, 65)) 
 except pygame.error:
     print("No se pudo cargar la imagen del cactus. Asegúrate de tener un archivo 'cactus.png' en el directorio 'assets/img'.")
     pygame.quit()
