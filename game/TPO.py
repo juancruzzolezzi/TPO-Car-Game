@@ -2,10 +2,10 @@ import pygame
 import sys
 import os
 import random
-from utils.constants import *
-from utils.functions import *
 # tkinter libreria de python para usar js en el front
 from PIL import Image, ImageEnhance  # Importar Pillow
+from utils.constants import *
+from utils.functions import *
 
 # Inicializar Pygame
 pygame.init()

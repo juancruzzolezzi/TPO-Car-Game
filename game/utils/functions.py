@@ -99,4 +99,3 @@ def mostrar_pantalla_pausa(pantalla, fuente_pausa, ANCHO, ALTO):
     
     # Dibujar el texto de pausa sobre la pantalla nublada
     pantalla.blit(texto_pausa, rect_pausa)
-
