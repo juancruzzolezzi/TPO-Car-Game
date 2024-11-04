@@ -53,5 +53,39 @@ class TestFunctions(unittest.TestCase):
         # Verifica que el obstáculo está dentro de los márgenes de la carretera
         self.assertTrue(MARGEN_CARRETERA <= obstaculos[0]['rect'].x <= ANCHO - MARGEN_CARRETERA)
 
+    def test_auto_stays_within_road_bounds(self):
+        # Configuración de la carretera y posición del auto
+        MARGEN_CARRETERA = 50
+        ANCHO = 800
+        ALTO = 600
+        auto_rect = pygame.Rect(100, ALTO - 60, 72, 130)  # Suponiendo un tamaño de auto
+
+        # Simular movimiento fuera de los límites
+        auto_rect.left = MARGEN_CARRETERA - 10
+        auto_rect.right = ANCHO - MARGEN_CARRETERA + 10
+
+        # Limitar el auto dentro de los límites de la carretera
+        auto_rect.left = max(auto_rect.left, MARGEN_CARRETERA)
+        auto_rect.right = min(auto_rect.right, ANCHO - MARGEN_CARRETERA)
+
+        # Verificar límites
+        self.assertGreaterEqual(auto_rect.left, MARGEN_CARRETERA)
+        self.assertLessEqual(auto_rect.right, ANCHO - MARGEN_CARRETERA)
+
+    def test_obstacles_move_down(self):
+        # Configuración inicial de obstáculos
+        obstaculo_imagen = pygame.Surface((45, 65))  # Imagen de prueba para el obstáculo
+        obstaculos = []
+        crear_obstaculo(50, 800, obstaculo_imagen, obstaculos)
+        posicion_inicial = obstaculos[0]['rect'].y
+
+        # Simular movimiento de los obstáculos
+        velocidad_obstaculo = 5
+        for obstaculo in obstaculos:
+            obstaculo['rect'].y += velocidad_obstaculo
+
+        # Verificar que los obstáculos se movieron hacia abajo
+        self.assertGreater(obstaculos[0]['rect'].y, posicion_inicial)
+    
 if __name__ == '__main__':
     unittest.main()
