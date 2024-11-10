@@ -27,6 +27,9 @@ VELOCIDAD_OBSTACULO_MAX = 30
 
 DISTANCIA_PARA_SUBIR_NIVEL = 100
 
+COLOR_FONDO = (0, 0, 0)
+COLOR_TEXTO = (255, 255, 255)
+
 # Inicializar variables de velocidad y nivel del juego
 velocidad_auto = VELOCIDAD_AUTO_BASE
 velocidad_carretera = VELOCIDAD_CARRETERA_BASE

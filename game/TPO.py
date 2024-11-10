@@ -90,6 +90,8 @@ def reiniciar_juego(VELOCIDAD_AUTO_BASE, VELOCIDAD_CARRETERA_BASE, VELOCIDAD_OBS
     nivel = 1
     obstaculos = []
     auto_rect = auto_imagen.get_rect(center=(ANCHO // 2, ALTO - 60))
+    
+nombre_jugador = pedir_nombre(pantalla, fuente)
 
 # Bucle principal del juego
 while True:
@@ -154,7 +156,7 @@ while True:
             obstaculo['rect'].y += VELOCIDAD_OBSTACULO_BASE
             if auto_rect.colliderect(obstaculo['rect']):
                 print("¡Choque! Juego terminado.")
-                if mostrar_pantalla_game_over(pantalla, fuente, puntuacion, ANCHO, ALTO, COLOR_GAME_OVER):
+                if mostrar_pantalla_game_over(pantalla, fuente, puntuacion, ANCHO, ALTO, COLOR_GAME_OVER, nombre_jugador):
                     reiniciar_juego(VELOCIDAD_AUTO_BASE, VELOCIDAD_CARRETERA_BASE, VELOCIDAD_OBSTACULO_BASE, auto_imagen, ANCHO, ALTO)
                 else:
                     pygame.quit()
@@ -202,7 +204,7 @@ while True:
     pantalla.blit(texto_nivel, (10, 60))
     pantalla.blit(texto_distancia, (10, 100))
     pantalla.blit(texto_puntuacion_valor, (10, 130))  # Ajustar la coordenada y para que esté en el siguiente renglón
-
+    texto_nombre_jugador = fuente.render(f"Jugador: {nombre_jugador}", True, (255, 255, 255))  # Agrega el nombre del jugador
     
     if pausado:
         mostrar_pantalla_pausa(pantalla, fuente_pausa, ANCHO, ALTO)
