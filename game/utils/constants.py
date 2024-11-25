@@ -19,7 +19,7 @@ puntuacion = 0
 # Constantes modificadas
 VELOCIDAD_AUTO_BASE = 9  # Velocidad inicial baja
 VELOCIDAD_CARRETERA_BASE = 10  # Velocidad inicial baja
-VELOCIDAD_OBSTACULO_BASE = 10 # Velocidad inicial baja
+VELOCIDAD_OBSTACULO_BASE = 10  # Velocidad inicial baja
 
 VELOCIDAD_AUTO_MAX = 32
 VELOCIDAD_CARRETERA_MAX = 50

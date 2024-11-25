@@ -5,6 +5,7 @@ import pygame
 # Inicia Pygame para poder trabajar con Surfaces en las pruebas
 pygame.init()
 
+
 class TestFunctions(unittest.TestCase):
     def test_actualizar_nivel(self):
         # Valores de prueba
@@ -25,12 +26,27 @@ class TestFunctions(unittest.TestCase):
         velocidad_obstaculo = VELOCIDAD_OBSTACULO_BASE
 
         # Llama a la función
-        nuevo_nivel, nueva_velocidad_auto, nueva_velocidad_carretera, nueva_velocidad_obstaculo = actualizar_nivel(
-            distancia_recorrida, nivel, DISTANCIA_PARA_SUBIR_NIVEL,
-            VELOCIDAD_AUTO_BASE, INCREMENTO_VELOCIDAD_AUTO, VELOCIDAD_AUTO_MAX,
-            VELOCIDAD_CARRETERA_BASE, INCREMENTO_VELOCIDAD_CARRETERA, VELOCIDAD_CARRETERA_MAX,
-            VELOCIDAD_OBSTACULO_BASE, INCREMENTO_VELOCIDAD_OBSTACULO, VELOCIDAD_OBSTACULO_MAX,
-            velocidad_auto, velocidad_carretera, velocidad_obstaculo
+        (
+            nuevo_nivel,
+            nueva_velocidad_auto,
+            nueva_velocidad_carretera,
+            nueva_velocidad_obstaculo,
+        ) = actualizar_nivel(
+            distancia_recorrida,
+            nivel,
+            DISTANCIA_PARA_SUBIR_NIVEL,
+            VELOCIDAD_AUTO_BASE,
+            INCREMENTO_VELOCIDAD_AUTO,
+            VELOCIDAD_AUTO_MAX,
+            VELOCIDAD_CARRETERA_BASE,
+            INCREMENTO_VELOCIDAD_CARRETERA,
+            VELOCIDAD_CARRETERA_MAX,
+            VELOCIDAD_OBSTACULO_BASE,
+            INCREMENTO_VELOCIDAD_OBSTACULO,
+            VELOCIDAD_OBSTACULO_MAX,
+            velocidad_auto,
+            velocidad_carretera,
+            velocidad_obstaculo,
         )
 
         # Pruebas de verificación
@@ -43,7 +59,9 @@ class TestFunctions(unittest.TestCase):
         MARGEN_CARRETERA = 100
         ANCHO = 800
         obstaculos = []
-        imagen_obstaculo = pygame.Surface((50, 50))  # Crear una superficie como imagen de prueba
+        imagen_obstaculo = pygame.Surface(
+            (50, 50)
+        )  # Crear una superficie como imagen de prueba
 
         # Llama a la función
         crear_obstaculo(MARGEN_CARRETERA, ANCHO, imagen_obstaculo, obstaculos)
@@ -51,14 +69,18 @@ class TestFunctions(unittest.TestCase):
         # Verifica que se ha creado un obstáculo
         self.assertEqual(len(obstaculos), 1)
         # Verifica que el obstáculo está dentro de los márgenes de la carretera
-        self.assertTrue(MARGEN_CARRETERA <= obstaculos[0]['rect'].x <= ANCHO - MARGEN_CARRETERA)
+        self.assertTrue(
+            MARGEN_CARRETERA <= obstaculos[0]["rect"].x <= ANCHO -
+            MARGEN_CARRETERA
+        )
 
     def test_auto_stays_within_road_bounds(self):
         # Configuración de la carretera y posición del auto
         MARGEN_CARRETERA = 50
         ANCHO = 800
         ALTO = 600
-        auto_rect = pygame.Rect(100, ALTO - 60, 72, 130)  # Suponiendo un tamaño de auto
+        # Suponiendo un tamaño de auto
+        auto_rect = pygame.Rect(100, ALTO - 60, 72, 130)
 
         # Simular movimiento fuera de los límites
         auto_rect.left = MARGEN_CARRETERA - 10
@@ -74,18 +96,21 @@ class TestFunctions(unittest.TestCase):
 
     def test_obstacles_move_down(self):
         # Configuración inicial de obstáculos
-        obstaculo_imagen = pygame.Surface((45, 65))  # Imagen de prueba para el obstáculo
+        obstaculo_imagen = pygame.Surface(
+            (45, 65)
+        )  # Imagen de prueba para el obstáculo
         obstaculos = []
         crear_obstaculo(50, 800, obstaculo_imagen, obstaculos)
-        posicion_inicial = obstaculos[0]['rect'].y
+        posicion_inicial = obstaculos[0]["rect"].y
 
         # Simular movimiento de los obstáculos
         velocidad_obstaculo = 5
         for obstaculo in obstaculos:
-            obstaculo['rect'].y += velocidad_obstaculo
+            obstaculo["rect"].y += velocidad_obstaculo
 
         # Verificar que los obstáculos se movieron hacia abajo
-        self.assertGreater(obstaculos[0]['rect'].y, posicion_inicial)
-    
-if __name__ == '__main__':
+        self.assertGreater(obstaculos[0]["rect"].y, posicion_inicial)
+
+
+if __name__ == "__main__":
     unittest.main()

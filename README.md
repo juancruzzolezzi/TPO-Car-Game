@@ -55,3 +55,8 @@
 [o] que la barra de space sea pausa.
 [x] diseño.
 [x] pep8 correcciones.
+[x] Mejorar el readme con readme.so (WEB)
+[x] Mejorar el leaderboard (que no se repitan los mismos records con mismos nombres)
+
+#pep8 --first archivo.py
+#pycodestyle archivo.py
