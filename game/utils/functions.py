@@ -259,3 +259,13 @@ def mostrar_pantalla_pausa(pantalla, fuente_pausa, ANCHO, ALTO):
 
     # Dibujar el texto de pausa sobre la pantalla nublada
     pantalla.blit(texto_pausa, rect_pausa)
+
+def renderizar_fondo(estado_fondo, pantalla):
+    if estado_fondo == 0:  # Día
+        pantalla.fill((135, 206, 235))  # Fondo color celeste cielo para el día
+    elif estado_fondo == 1:  # Noche
+        pantalla.fill((0, 0, 0))  # Fondo negro para la noche
+    elif estado_fondo == 2:  # Lluvia
+        pantalla.fill((100, 100, 100))  # Fondo gris para lluvia
+    elif estado_fondo == 3:  # Nieve
+        pantalla.fill((200, 200, 200))  # Fondo gris claro para nieve

@@ -3,6 +3,7 @@ import sys
 import os
 import random
 from PIL import Image, ImageEnhance  # Importar Pillow
+from utils.classes import Nieve, Lluvia
 from utils.constants import *
 from utils.functions import *
 
@@ -66,6 +67,9 @@ except pygame.error:
     pygame.quit()
     sys.exit()
 
+# Inicializar la lluvia y la nieve
+nieve = Nieve(100, pantalla)
+lluvia = Lluvia(200, pantalla)
 
 # Crear la carretera
 carretera_superior = pygame.Surface((ANCHO_CARRETERA, ALTO))
@@ -168,6 +172,10 @@ while True:
             )
         )
 
+        # Cambiar el color de la carretera basado en la distancia recorrida
+        estado_fondo = int(distancia_recorrida // DISTANCIA_CAMBIO_FONDO) % 4
+
+
         # Volver a posicionar la carretera
         if carretera_rect_superior.y >= ALTO:
             carretera_rect_superior.y = carretera_rect_inferior.y - ALTO
@@ -223,6 +231,9 @@ while True:
     # Actualizar la pantalla
     pantalla.fill(COLOR_FONDO)
 
+    # Llamar a la función de renderizado dentro del bucle principal
+    renderizar_fondo(estado_fondo, pantalla)
+
     # Dibujar carretera
     pantalla.blit(carretera_superior, carretera_rect_superior)
     pantalla.blit(carretera_inferior, carretera_rect_inferior)
@@ -250,6 +261,14 @@ while True:
     # Dibujar obstáculos
     for obstaculo in obstaculos:
         pantalla.blit(obstaculo["imagen"], obstaculo["rect"])
+
+    # Agregar la lluvia o nieve si corresponde
+    if estado_fondo == 2:  # Lluvia
+        lluvia.actualizar()
+        lluvia.dibujar()
+    elif estado_fondo == 3:  # Nieve
+        nieve.actualizar()
+        nieve.dibujar()
 
     # Mostrar la distancia y la puntuación
     texto_puntuacion = fuente.render(
