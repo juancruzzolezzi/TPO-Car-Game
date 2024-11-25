@@ -175,7 +175,6 @@ while True:
         # Cambiar el color de la carretera basado en la distancia recorrida
         estado_fondo = int(distancia_recorrida // DISTANCIA_CAMBIO_FONDO) % 4
 
-
         # Volver a posicionar la carretera
         if carretera_rect_superior.y >= ALTO:
             carretera_rect_superior.y = carretera_rect_inferior.y - ALTO
