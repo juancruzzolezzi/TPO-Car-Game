@@ -50,14 +50,16 @@ def pedir_nombre(pantalla, fuente):
 
     return nombre
 
+
 def obtener_leaderboard():
     try:
-        with open('leaderboard.json', 'r') as f:
+        with open("leaderboard.json", "r") as f:
             leaderboard = json.load(f)
     except FileNotFoundError:
         leaderboard = []
 
     return leaderboard
+
 
 # Función que guarde la puntuación
 def guardar_puntuacion(puntuacion, nombre="Jugador"):
@@ -74,14 +76,15 @@ def guardar_puntuacion(puntuacion, nombre="Jugador"):
 
     # Verificar si el jugador ya tiene el mismo puntaje
     for entrada in leaderboard:
-        if entrada['nombre'] == nombre and entrada['puntuacion'] == puntuacion:
+        if entrada["nombre"] == nombre and entrada["puntuacion"] == puntuacion:
             return leaderboard
 
     # Añadir la nueva puntuación
     leaderboard.append({"nombre": nombre, "puntuacion": puntuacion})
 
     # Ordenar el leaderboard y mantener sólo los 5 mejores
-    leaderboard = sorted(leaderboard, key=lambda x: x["puntuacion"], reverse=True)[:5]
+    leaderboard = sorted(
+        leaderboard, key=lambda x: x["puntuacion"], reverse=True)[:5]
 
     # Guardar de nuevo en el archivo
     with open(archivo, "w") as f:
@@ -273,6 +276,7 @@ def mostrar_pantalla_pausa(pantalla, fuente_pausa, ANCHO, ALTO):
 
     # Dibujar el texto de pausa sobre la pantalla nublada
     pantalla.blit(texto_pausa, rect_pausa)
+
 
 def renderizar_fondo(estado_fondo, pantalla):
     if estado_fondo == 0:  # Día
