@@ -50,9 +50,20 @@ def pedir_nombre(pantalla, fuente):
 
     return nombre
 
+def obtener_leaderboard():
+    try:
+        with open('leaderboard.json', 'r') as f:
+            leaderboard = json.load(f)
+    except FileNotFoundError:
+        leaderboard = []
+
+    return leaderboard
 
 # Función que guarde la puntuación
 def guardar_puntuacion(puntuacion, nombre="Jugador"):
+    if puntuacion <= 0:
+        return obtener_leaderboard()
+
     leaderboard = []
     archivo = "leaderboard.json"
 
@@ -61,12 +72,16 @@ def guardar_puntuacion(puntuacion, nombre="Jugador"):
         with open(archivo, "r") as f:
             leaderboard = json.load(f)
 
+    # Verificar si el jugador ya tiene el mismo puntaje
+    for entrada in leaderboard:
+        if entrada['nombre'] == nombre and entrada['puntuacion'] == puntuacion:
+            return leaderboard
+
     # Añadir la nueva puntuación
     leaderboard.append({"nombre": nombre, "puntuacion": puntuacion})
 
     # Ordenar el leaderboard y mantener sólo los 5 mejores
-    leaderboard = sorted(
-        leaderboard, key=lambda x: x["puntuacion"], reverse=True)[:5]
+    leaderboard = sorted(leaderboard, key=lambda x: x["puntuacion"], reverse=True)[:5]
 
     # Guardar de nuevo en el archivo
     with open(archivo, "w") as f:
@@ -144,7 +159,6 @@ def mostrar_pantalla_game_over(
 
     # Tamaño más grande para "Game Over"
     fuente_game_over = pygame.font.Font(None, 72)
-    fuente_puntuacion = pygame.font.Font(None, 48)
 
     # Renderizar y dibujar el texto de "Game Over"
     texto_game_over = fuente_game_over.render(
