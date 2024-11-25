@@ -2,11 +2,11 @@ TPO - VIDEO JUEGO DE AUTOS.
 
 
 Instrucciones para el programador:
-- pip install pillow
-- Run python file en TPO.py
+- `pip install pillow`
+- Run Python file en `TPO.py`
 Instrucciones para hacer pruebas unitarias:
-- Navegar por consola hasta la carpeta "games"
-- Ejecutar el comando: python -m unittest discover -s tests
+- Navegar por consola hasta la carpeta `games`
+- Ejecutar el comando: `python -m unittest discover -s tests`
 
 
 Instrucciones del juego:
